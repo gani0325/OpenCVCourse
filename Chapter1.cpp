@@ -11,12 +11,27 @@ using namespace std;
 
 // #1. Read Images Videos and Webcams
 // 1) Importing Images
-int main(int ac, char** av) {
-	// Mat은 이미지를 담을 객체이다. 행렬 구성
-	string path = "Resources/alpaca.jpg";
-	Mat img = imread(path);
-	imshow("img", img);
-	waitKey(0);
+//void main() {
+//	// Mat은 이미지를 담을 객체이다. 행렬 구성
+//	string path = "Resources/alpaca.jpg";
+//	Mat img = imread(path);
+//	imshow("img", img);
+//	waitKey(0);
+//}
 
-	return 0;
+// 2) Importing Video
+void main() {
+	string path = "Resources/eddy.mp4";
+	// VideoCapture '변수 이름'( "동영상 이름" ) : 동영상 화면(frame)을 읽음
+	VideoCapture cap(path);
+	Mat video;
+
+	while (true) {
+		cap.read(video);
+		imshow("Video", video);
+		// 키 입력을 기다리는 대기 함수
+		// 0 : 무한 대기
+		// ms(밀리세컨) 단위의 시간 : 해당 시간만큼 대기 (1000ms = 1초)
+		waitKey(20);
+	}
 }
