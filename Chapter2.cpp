@@ -15,11 +15,17 @@ void main() {
 	string path = "Resources/alpaca.jpg";
 	Mat img = imread(path);
 	Mat imgGray;
+	Mat imgBlur;
 
-	// vtColor( input Array,  output Array, flag)
+	// cvtColor( input Array,  output Array, flag)
 	// : input Array를 입력받아 flag 에 대한 옵션으로 이미지 색채널을 변경
 	cvtColor(img, imgGray, COLOR_BGR2GRAY);
+	// GaussianBlur( src, dst, kernel_size, sigma_x, sigma_y, borderType) 
+	// 중앙값에 가중치를 더 주고 주변은 더 흐리게
+	GaussianBlur(img, imgBlur, Size(3, 3), 3, 0);
+
 	imshow("img", img);
 	imshow("Gray img", imgGray);
+
 	waitKey(0);
 }
