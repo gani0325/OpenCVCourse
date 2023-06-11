@@ -5,11 +5,10 @@
 #include <iostream>
 #include <stdio.h>
 
-
 using namespace cv;
 using namespace std;
 
-
+// OpenCV 로 이미지 띄우기
 int main(int ac, char** av) {
 	// Mat은 이미지를 담을 객체이다. 행렬 구성
 	string path = "Resources/alpaca.jpg";
