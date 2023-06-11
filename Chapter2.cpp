@@ -8,8 +8,7 @@
 using namespace cv;
 using namespace std;
 
-// #1. Read Images Videos and Webcams
-// 1) Importing Images
+// #2. Basic Functions (cvtColor, GaussianBlur, Edge detection, dilate, erode)
 void main() {
 	// Mat은 이미지를 담을 객체이다. 행렬 구성
 	string path = "Resources/alpaca.jpg";
