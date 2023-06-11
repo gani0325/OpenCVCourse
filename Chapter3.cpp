@@ -15,11 +15,20 @@ void main() {
 	string path = "Resources/alpaca.jpg";
 	Mat img = imread(path);
 	Mat imgResize;
+	Mat imgCrop;
 
 	cout << img.size() << endl;		// [612 X 536]
+	// Resize
+	// : 이미지를 확대 또는 축소
 	resize(img, imgResize, Size(300, 300));
+	
+	// ROI (crop)
+	// : 원본 이미지에서 원하는 부분만 잘라서 가져오는 것
+	Rect roi(100, 100, 300, 250);
+	imgCrop = img(roi);
 
 	imshow("Image", img);
 	imshow("Image Resize", imgResize);
+	imshow("Image Crop", imgCrop);
 	waitKey(0);
 }
