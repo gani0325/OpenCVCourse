@@ -8,3 +8,15 @@
 
 using namespace cv;
 using namespace std;
+
+// #1. Read Images Videos and Webcams
+// 1) Importing Images
+int main(int ac, char** av) {
+	// Mat은 이미지를 담을 객체이다. 행렬 구성
+	string path = "Resources/alpaca.jpg";
+	Mat img = imread(path);
+	imshow("img", img);
+	waitKey(0);
+
+	return 0;
+}
