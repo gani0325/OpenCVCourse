@@ -17,6 +17,8 @@ void main() {
 	Mat imgGray;
 	Mat imgBlur;
 	Mat imgCanny;
+	Mat imgDil;
+	Mat imgErode;
 
 	// cvtColor( input Array,  output Array, flag)
 	// : input Array를 입력받아 flag 에 대한 옵션으로 이미지 색채널을 변경
@@ -27,11 +29,21 @@ void main() {
 	// Canny( src, dst, threshold1, threshold2)
 	// : 경계선 검출
 	Canny(imgBlur, imgCanny, 50, 150);
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
+	// Morphology 
+	// For Erosion : erode( src, dst, kernel, anchor, iteration, borderType, borderValue)
+	// : 흰색 픽셀을 늘리는 역할
+	erode(imgCanny, imgErode, kernel, Point(-1, -1), 1);
+	// For Dilation : dilate( src, dst, kernel, anchor, iteration, borderType, borderValue)
+	// : 흰색 픽셀을 줄이는 역할
+	dilate(imgCanny, imgDil, kernel, Point(-1, -1), 1);
 
 	imshow("img", img);
 	imshow("Gray img", imgGray);
 	imshow("Gray Blur", imgBlur);
 	imshow("Canny", imgCanny);
+	imshow("Dilation", imgDil);
+	imshow("Erode", imgErode);
 
 	waitKey(0);
 }
