@@ -16,16 +16,22 @@ void main() {
 	Mat img = imread(path);
 	Mat imgGray;
 	Mat imgBlur;
+	Mat imgCanny;
 
 	// cvtColor( input Array,  output Array, flag)
 	// : input Array를 입력받아 flag 에 대한 옵션으로 이미지 색채널을 변경
 	cvtColor(img, imgGray, COLOR_BGR2GRAY);
 	// GaussianBlur( src, dst, kernel_size, sigma_x, sigma_y, borderType) 
-	// 중앙값에 가중치를 더 주고 주변은 더 흐리게
+	// : 중앙값에 가중치를 더 주고 주변은 더 흐리게
 	GaussianBlur(img, imgBlur, Size(3, 3), 3, 0);
+	// Canny( src, dst, threshold1, threshold2)
+	// : 경계선 검출
+	Canny(imgBlur, imgCanny, 50, 150);
 
 	imshow("img", img);
 	imshow("Gray img", imgGray);
+	imshow("Gray Blur", imgBlur);
+	imshow("Canny", imgCanny);
 
 	waitKey(0);
 }
