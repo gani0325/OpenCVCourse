@@ -19,11 +19,24 @@ void getContours(Mat imgDil, Mat img) {
 	// findContours(image, mode, method, contours=None, hierarchy=None, offset=None) 
 	// : 외곽선 검출이란 객체의 외곽선 좌표를 모두 추출하는 작업
 	findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-	
-	// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
-	// : 검출한 외곽선을 확인하기 위해 이 함수를 이용하여 외곽선을 화면에 그리기
-	drawContours(img, contours, -1, Scalar(255, 0, 255), 2);
+	vector<vector<Point>> conPoly(contours.size());
+	vector<Rect> boundRect(contours.size());
 
+	for (int i = 0; i < contours.size(); i++)
+	{
+		float peri = arcLength(contours[i], true);
+		approxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
+
+		// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
+		// : 검출한 외곽선을 확인하기 위해 이 함수를 이용하여 외곽선을 화면에 그리기
+		drawContours(img, contours, -1, Scalar(255, 0, 255), 2);
+		cout << conPoly[i].size() << endl;
+		
+		// 주어진 점을 감싸는 최소 크기 사각형(바운딩 박스)를 반환
+		boundRect[i] = boundingRect(conPoly[i]);
+		rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(0, 255, 0), 5);
+
+	}
 }
 
 void main() {
