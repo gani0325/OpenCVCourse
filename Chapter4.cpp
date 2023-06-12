@@ -20,6 +20,9 @@ void main() {
 	// line( Input Output Array, pt1, pt2, scalar(b,g,r), thickness, lineType,  shift ) 
 	line(img, Point(130, 296), Point(382, 454), Scalar(255, 12, 4), 3);
 
+	// putText( img, string, Point(x,y), font face, font scale, color, thickness, line type, bottom left origin )
+	putText(img, "gani hello", Point(147, 242), FONT_HERSHEY_DUPLEX, 2, Scalar(0, 34, 255), 2);
+
 	imshow("Image", img);
 	waitKey(0);
 }
