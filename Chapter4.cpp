@@ -17,6 +17,8 @@ void main() {
 	circle(img, Point(256, 256), 155, Scalar(0, 69, 255), 10);
 	// rectangle( img , Rect , Scalar(b, g, r), thickness, lineType, shift )
 	rectangle(img, Point(130, 226), Point(382, 286), Scalar(255, 255, 0), FILLED);
+	// line( Input Output Array, pt1, pt2, scalar(b,g,r), thickness, lineType,  shift ) 
+	line(img, Point(130, 296), Point(382, 454), Scalar(255, 12, 4), 3);
 
 	imshow("Image", img);
 	waitKey(0);
