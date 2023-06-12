@@ -9,15 +9,26 @@ using namespace cv;
 using namespace std;
 
 // #7. Shapes/Contour Detection
-Mat imgHSV, mask;
-int hmin = 0, smin = 110, vmin = 153;
-int hmax = 19, smax = 240, vmax = 255;
+Mat imgGray, imgBlur, imgCanny, imgDil, imgErode;
+
+void getContours(Mat imgDil, Mat img) {
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+	
+	// findContours(image, mode, method, contours=None, hierarchy=None, offset=None) 
+	// : 외곽선 검출이란 객체의 외곽선 좌표를 모두 추출하는 작업
+	findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+	
+	// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
+	// : 검출한 외곽선을 확인하기 위해 이 함수를 이용하여 외곽선을 화면에 그리기
+	drawContours(img, contours, -1, Scalar(255, 0, 255), 2);
+
+}
 
 void main() {
-
 	string path = "Resources/shapes.png";
 	Mat img = imread(path);
-	Mat imgGray, imgBlur, imgCanny, imgDil, imgErode;
 
 	// Preprocessing
 	cvtColor(img, imgGray, COLOR_BGR2GRAY);
@@ -29,11 +40,13 @@ void main() {
 	Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
 	dilate(imgCanny, imgDil, kernel);
 
+	getContours(imgDil, img);
+
 	imshow("Image", img);
-	imshow("Image Gray", imgGray);
-	imshow("Image Blur", imgBlur);
-	imshow("Image Canny", imgCanny);
-	imshow("Image Dil", imgDil);
+	//imshow("Image Gray", imgGray);
+	//imshow("Image Blur", imgBlur);
+	//imshow("Image Canny", imgCanny);
+	//imshow("Image Dil", imgDil);
 
 	waitKey(0);
 
