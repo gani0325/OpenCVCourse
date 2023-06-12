@@ -39,9 +39,16 @@ void getContours(Mat imgDil, Mat img) {
 			boundRect[i] = boundingRect(conPoly[i]);
 
 			int objCor = (int)conPoly[i].size();
-
+			
+			// 산술 계산을 통해 직사각형 or 정사각형 구분하기
 			if (objCor == 3) { objectType = "Tri"; }
-			else if (objCor == 4) { objectType = "Rect"; }
+			else if (objCor == 4)
+			{
+				float aspRatio = (float)boundRect[i].width / (float)boundRect[i].height;
+				cout << aspRatio << endl;
+				if (aspRatio > 0.95 && aspRatio < 1.05) { objectType = "Square"; }
+				else { objectType = "Rect"; }
+			}
 			else if (objCor > 4) { objectType = "Circle"; }
 
 			// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
