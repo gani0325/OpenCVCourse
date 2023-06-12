@@ -15,27 +15,41 @@ void getContours(Mat imgDil, Mat img) {
 
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	
+
 	// findContours(image, mode, method, contours=None, hierarchy=None, offset=None) 
 	// : 외곽선 검출이란 객체의 외곽선 좌표를 모두 추출하는 작업
 	findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-	vector<vector<Point>> conPoly(contours.size());
-	vector<Rect> boundRect(contours.size());
 
-	for (int i = 0; i < contours.size(); i++)
-	{
-		float peri = arcLength(contours[i], true);
-		approxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
+	for (int i = 0; i < contours.size(); i++) {
+		int area = contourArea(contours[i]);
+		cout << area << endl;
 
-		// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
-		// : 검출한 외곽선을 확인하기 위해 이 함수를 이용하여 외곽선을 화면에 그리기
-		drawContours(img, contours, -1, Scalar(255, 0, 255), 2);
-		cout << conPoly[i].size() << endl;
-		
-		// 주어진 점을 감싸는 최소 크기 사각형(바운딩 박스)를 반환
-		boundRect[i] = boundingRect(conPoly[i]);
-		rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(0, 255, 0), 5);
+		vector<vector<Point>> conPoly(contours.size());
+		vector<Rect> boundRect(contours.size());
+		string objectType;
 
+		if (area > 1000) {
+			float peri = arcLength(contours[i], true);
+			
+			// approxPolyDP(윤곽선, 근사치 정확도, 폐곡선)
+			// : 윤곽선들의 윤곽점들로 근사해 근사 다각형으로 반환
+			approxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
+
+			cout << conPoly[i].size() << endl;
+			boundRect[i] = boundingRect(conPoly[i]);
+
+			int objCor = (int)conPoly[i].size();
+
+			if (objCor == 3) { objectType = "Tri"; }
+			else if (objCor == 4) { objectType = "Rect"; }
+			else if (objCor > 4) { objectType = "Circle"; }
+
+			// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
+			// : 검출한 외곽선을 확인하기 위해 이 함수를 이용하여 외곽선을 화면에 그리기
+			drawContours(img, conPoly, i, Scalar(255, 0, 255), 2);
+			rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(0, 255, 0), 5);
+			putText(img, objectType, { boundRect[i].x,boundRect[i].y - 5 }, FONT_HERSHEY_PLAIN, 1, Scalar(0, 69, 255), 2);
+		}
 	}
 }
 
