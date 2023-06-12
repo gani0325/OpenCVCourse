@@ -11,8 +11,11 @@ using namespace std;
 // #4. Drawing shapes and text
 void main() {
 	// Mat은 이미지를 담을 객체이다. 행렬 구성
-	Mat img(512, 512, CV_8UC3, Scalar(255, 0, 255));		// Blank image
-	imshow("Image", img);
+	Mat img(512, 512, CV_8UC3, Scalar(255, 0, 100));		// Blank image
+	
+	// circle( img, Point(x, y), radius, Scalar(b,g,r), thickness, lineType, shift )
+	circle(img, Point(256, 256), 155, Scalar(0, 69, 255), 10);
 
+	imshow("Image", img);
 	waitKey(0);
 }
