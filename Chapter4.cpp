@@ -15,6 +15,8 @@ void main() {
 	
 	// circle( img, Point(x, y), radius, Scalar(b,g,r), thickness, lineType, shift )
 	circle(img, Point(256, 256), 155, Scalar(0, 69, 255), 10);
+	// rectangle( img , Rect , Scalar(b, g, r), thickness, lineType, shift )
+	rectangle(img, Point(130, 226), Point(382, 286), Scalar(255, 255, 0), FILLED);
 
 	imshow("Image", img);
 	waitKey(0);
