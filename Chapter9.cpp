@@ -11,7 +11,8 @@ using namespace std;
 
 // #9. Project1 - Virtual Painter
 Mat img;
-vector<vector<int>> newPoints;
+VideoCapture cap(0);
+vector<vector<int>> newPoints;  // to store all points
 
 ////////////////////  COLOR VALUES ////////////////////////////////
 // hmin, smin, vmin, hmax, smax, vmax
@@ -51,8 +52,8 @@ Point getContours(Mat imgDil) {
 
 			// drawContours(image, contours, contourIdx, color, thickness=None, lineType=No)
 			// : 검출한 외곽선을 확인하기 위해 이 함수를 이용하여 외곽선을 화면에 그리기
-			drawContours(img, conPoly, i, Scalar(255, 0, 255), 2);
-			rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(0, 255, 0), 5);
+			//drawContours(img, conPoly, i, Scalar(255, 0, 255), 2);
+			//rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(0, 255, 0), 5);
 		}
 	}
 	return myPoint;
@@ -79,7 +80,7 @@ vector<vector<int>> findColor(Mat img) {
 
 void drawOnCanvas(vector<vector<int>> newPoints, vector<Scalar> myColorValues) {
 	for (int i = 0; i < newPoints.size(); i++) {
-		circle(img, Point(newPoints[i][0], newPoints[i][0]), 10, myColorValues[newPoints[i][2]], FILLED);
+		circle(img, Point(newPoints[i][0], newPoints[i][1]), 10, myColorValues[newPoints[i][2]], FILLED);
 	}
 }
 
