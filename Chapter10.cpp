@@ -10,45 +10,38 @@ using namespace cv;
 using namespace std;
 
 // #10. Document Scanner
-Mat imgOriginal, imgGray, imgCanny, imgThre, imgBlur, imgErode, imgDil;
+Mat imgOriginal, imgGray, imgBlur, imgCanny, imgThre, imgDil, imgErode, imgWarp, imgCrop;
 vector<Point> initialPoints, docPoints;
 
-Mat preProcessing(Mat img) {
-	// cvtColor( input Array,  output Array, flag)
-	// : input Array를 입력받아 flag 에 대한 옵션으로 이미지 색채널을 변경
+float w = 420, h = 596;
+
+Mat preProcessing(Mat img)
+{
 	cvtColor(img, imgGray, COLOR_BGR2GRAY);
-	// GaussianBlur( src, dst, kernel_size, sigma_x, sigma_y, borderType) 
-	// : 중앙값에 가중치를 더 주고 주변은 더 흐리게
-	GaussianBlur(img, imgBlur, Size(3, 3), 3, 0);
-	// Canny( src, dst, threshold1, threshold2)
-	// : 경계선 검출
+	GaussianBlur(imgGray, imgBlur, Size(3, 3), 3, 0);
 	Canny(imgBlur, imgCanny, 25, 75);
 	Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
-	// Morphology 
-	// For Erosion : erode( src, dst, kernel, anchor, iteration, borderType, borderValue)
-	// : 흰색 픽셀을 늘리는 역할
-	//erode(imgCanny, imgErode, kernel);
-	// For Dilation : dilate( src, dst, kernel, anchor, iteration, borderType, borderValue)
-	// : 흰색 픽셀을 줄이는 역할
 	dilate(imgCanny, imgDil, kernel);
+	//erode(imgDil, imgErode, kernel);
 	return imgDil;
 }
 
-vector<Point> getContours(Mat imgDil) {
+vector<Point> getContours(Mat image) {
+
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
 
-	// findContours(image, mode, method, contours=None, hierarchy=None, offset=None) 
-	// : 외곽선 검출이란 객체의 외곽선 좌표를 모두 추출하는 작업
-	findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+	findContours(image, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+	//drawContours(img, contours, -1, Scalar(255, 0, 255), 2);
 	vector<vector<Point>> conPoly(contours.size());
 	vector<Rect> boundRect(contours.size());
+
 	vector<Point> biggest;
 	int maxArea = 0;
 
 	for (int i = 0; i < contours.size(); i++) {
 		int area = contourArea(contours[i]);
-		cout << area << endl;
+		//cout << area << endl;
 
 		string objectType;
 
@@ -59,7 +52,7 @@ vector<Point> getContours(Mat imgDil) {
 			approxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
 
 			if (area > maxArea && conPoly[i].size() == 4) {
-				drawContours(imgOriginal, conPoly, i, Scalar(255, 0, 255), 5);
+				//drawContours(imgOriginal, conPoly, i, Scalar(255, 0, 255), 5);
 				biggest = { conPoly[i][0], conPoly[i][1], conPoly[i][2], conPoly[i][3] };
 				maxArea = area;
 			}
@@ -72,28 +65,44 @@ vector<Point> getContours(Mat imgDil) {
 	return biggest;
 }
 
-void drawPoints(vector<Point> points, Scalar color) {
-	for (int i = 0; i < points.size(); i++) {
+void drawPoints(vector<Point> points, Scalar color)
+{
+	for (int i = 0; i < points.size(); i++)
+	{
 		circle(imgOriginal, points[i], 10, color, FILLED);
 		putText(imgOriginal, to_string(i), points[i], FONT_HERSHEY_PLAIN, 4, color, 4);
 	}
 }
 
-vector<Point> reorder(vector<Point> points) {
+vector<Point> reorder(vector<Point> points)
+{
 	vector<Point> newPoints;
-	vector<int> sumPoints, subPoints;
+	vector<int>  sumPoints, subPoints;
 
-	for (int i = 0; i < 4; i++) {
-		sumPoints.push_back(points[0].x + points[0].y);
-		subPoints.push_back(points[0].x - points[0].y);
+	for (int i = 0; i < 4; i++)
+	{
+		sumPoints.push_back(points[i].x + points[i].y);
+		subPoints.push_back(points[i].x - points[i].y);
 	}
 
-	newPoints.push_back(points[min_element(sumPoints.begin(), sumPoints.end()) - sumPoints.begin()]);	// 0
-	newPoints.push_back(points[max_element(subPoints.begin(), subPoints.end()) - subPoints.begin()]);	// 1
-	newPoints.push_back(points[min_element(subPoints.begin(), subPoints.end()) - subPoints.begin()]);	// 2
-	newPoints.push_back(points[max_element(sumPoints.begin(), sumPoints.end()) - sumPoints.begin()]);	// 3
-	
+	newPoints.push_back(points[min_element(sumPoints.begin(), sumPoints.end()) - sumPoints.begin()]); // 0
+	newPoints.push_back(points[max_element(subPoints.begin(), subPoints.end()) - subPoints.begin()]); //1
+	newPoints.push_back(points[min_element(subPoints.begin(), subPoints.end()) - subPoints.begin()]); //2
+	newPoints.push_back(points[max_element(sumPoints.begin(), sumPoints.end()) - sumPoints.begin()]); //3
+
 	return newPoints;
+}
+
+Mat getWarp(Mat img, vector<Point> points, float w, float h)
+{
+	Point2f src[4] = { points[0],points[1],points[2],points[3] };
+	Point2f dst[4] = { {0.0f,0.0f},{w,0.0f},{0.0f,h},{w,h} };
+
+	// 점 4개의 이동 전, 이동 후 좌표를 입력하면 투시 변환 행렬을 반환하는 함수
+	Mat matrix = getPerspectiveTransform(src, dst);
+	warpPerspective(img, imgWarp, matrix, Point(w, h));
+
+	return imgWarp;
 }
 
 
@@ -106,13 +115,16 @@ int main() {
 	imgThre = preProcessing(imgOriginal);
 	// Get contours - Biggest
 	initialPoints = getContours(imgThre);
-	drawPoints(initialPoints, Scalar(0, 0, 255));
+	
 	docPoints = reorder(initialPoints);
-	drawPoints(docPoints, Scalar(0, 255, 0));
+	//drawPoints(docPoints, Scalar(0, 255, 0));
 
 	// Warp
+	imgWarp = getWarp(imgOriginal, docPoints, w, h);
+
 	imshow("image", imgOriginal);
-	imshow("image Dial", imgDil);
+	imshow("image Dial", imgThre);
+	imshow("image Dial", imgWarp);
 
 	waitKey(0);
 }
