@@ -11,7 +11,7 @@ using namespace std;
 
 // #10. Document Scanner
 Mat imgOriginal, imgGray, imgCanny, imgThre, imgBlur, imgErode, imgDil;
-vector<Point> initialPoints;
+vector<Point> initialPoints, docPoints;
 
 Mat preProcessing(Mat img) {
 	// cvtColor( input Array,  output Array, flag)
@@ -79,6 +79,24 @@ void drawPoints(vector<Point> points, Scalar color) {
 	}
 }
 
+vector<Point> reorder(vector<Point> points) {
+	vector<Point> newPoints;
+	vector<int> sumPoints, subPoints;
+
+	for (int i = 0; i < 4; i++) {
+		sumPoints.push_back(points[0].x + points[0].y);
+		subPoints.push_back(points[0].x - points[0].y);
+	}
+
+	newPoints.push_back(points[min_element(sumPoints.begin(), sumPoints.end()) - sumPoints.begin()]);	// 0
+	newPoints.push_back(points[max_element(subPoints.begin(), subPoints.end()) - subPoints.begin()]);	// 1
+	newPoints.push_back(points[min_element(subPoints.begin(), subPoints.end()) - subPoints.begin()]);	// 2
+	newPoints.push_back(points[max_element(sumPoints.begin(), sumPoints.end()) - sumPoints.begin()]);	// 3
+	
+	return newPoints;
+}
+
+
 int main() {
 	string path = "Resources/paper.jpg";
 	imgOriginal = imread(path);
@@ -89,6 +107,9 @@ int main() {
 	// Get contours - Biggest
 	initialPoints = getContours(imgThre);
 	drawPoints(initialPoints, Scalar(0, 0, 255));
+	docPoints = reorder(initialPoints);
+	drawPoints(docPoints, Scalar(0, 255, 0));
+
 	// Warp
 	imshow("image", imgOriginal);
 	imshow("image Dial", imgDil);
