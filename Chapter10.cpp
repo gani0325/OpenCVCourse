@@ -111,20 +111,27 @@ int main() {
 	imgOriginal = imread(path);
 	resize(imgOriginal, imgOriginal, Size(), 0.5, 0.5);
 
-	// Preprocessing
+	// Preprpcessing - Step 1 
 	imgThre = preProcessing(imgOriginal);
-	// Get contours - Biggest
+
+	// Get Contours - Biggest  - Step 2
 	initialPoints = getContours(imgThre);
 	
 	docPoints = reorder(initialPoints);
 	//drawPoints(docPoints, Scalar(0, 255, 0));
 
-	// Warp
+	// Warp - Step 3 
 	imgWarp = getWarp(imgOriginal, docPoints, w, h);
 
+	//Crop - Step 4
+	int cropVal = 5;
+	Rect roi(cropVal, cropVal, w - (2 * cropVal), h - (2 * cropVal));
+	imgCrop = imgWarp(roi);
+
 	imshow("image", imgOriginal);
-	imshow("image Dial", imgThre);
-	imshow("image Dial", imgWarp);
+	//imshow("image Dial", imgThre);
+	//imshow("image Dial", imgWarp);
+	imshow("Image Crop", imgCrop);
 
 	waitKey(0);
 }
