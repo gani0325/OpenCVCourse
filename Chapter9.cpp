@@ -10,34 +10,35 @@ using namespace cv;
 using namespace std;
 
 // #9. Project1 - Virtual Painter
-Mat imgHSV, mask, imgColor;
-int hmin = 0, smin = 110, vmin = 153;
-int hmax = 19, smax = 240, vmax = 255;
+////////////////////  COLOR VALUES ////////////////////////////////
+// hmin, smin, vmin, hmax, smax, vmax
+vector<vector<int>> myColors{ {124,48,117,143,170,255},		// Purple
+							   {68,72,156,102,126,255} };	// Green
+vector<Scalar> myColorValues{ {255,0,255},		// Purple
+							  {0,255,0} };		// Green 	
 
-Mat img;
-VideoCapture cap(0);
+void findColor(Mat img) {
+	Mat imgHSV;
+	cvtColor(img, imgHSV, COLOR_BGR2HSV);
+
+	for (int i = 0; i < myColors.size(); i++) {
+		Scalar lower(myColors[i][0], myColors[i][1], myColors[i][2]);
+		Scalar upper(myColors[i][3], myColors[i][4], myColors[i][5]);
+		Mat mask;
+		inRange(imgHSV, lower, upper, mask);
+		imshow(to_string(i), mask);
+	}
+}
 
 int main() {
-	namedWindow("Trackbars", (640, 200));
-	createTrackbar("Hue Min", "Trackbars", &hmin, 179);
-	createTrackbar("Hue Max", "Trackbars", &hmax, 179);
-	createTrackbar("Sat Min", "Trackbars", &smin, 255);
-	createTrackbar("Sat Max", "Trackbars", &smax, 255);
-	createTrackbar("Val Min", "Trackbars", &vmin, 255);
-	createTrackbar("Val Max", "Trackbars", &vmax, 255);
+	Mat img;
+	VideoCapture cap(0);
 
 	while (true) {
 		cap.read(img);
+		findColor(img);
 
-		cvtColor(img, imgHSV, COLOR_BGR2HSV);
-
-		Scalar lower(hmin, smin, vmin);
-		Scalar upper(hmin, smax, vmax);
-
-		inRange(imgHSV, lower, upper, mask);
-		
 		imshow("image", img);
-		imshow("Mask", mask);
 		waitKey(1);
 	}
 }
