@@ -74,8 +74,8 @@ vector<Point> getContours(Mat imgDil) {
 
 void drawPoints(vector<Point> points, Scalar color) {
 	for (int i = 0; i < points.size(); i++) {
-		circle(imgOriginal, points[i], 30, color, FILLED);
-		putText(imgOriginal, to_string(i), points[i], FONT_HERSHEY_PLAIN, 2, color, 2);
+		circle(imgOriginal, points[i], 10, color, FILLED);
+		putText(imgOriginal, to_string(i), points[i], FONT_HERSHEY_PLAIN, 4, color, 4);
 	}
 }
 
