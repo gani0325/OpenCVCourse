@@ -1,4 +1,5 @@
 # 📸 C++ 로 OpenCV 구현하기
+- https://alpaca-gt.tistory.com/697
 #### 1) Read Images, Videos and Webcam
 ![image](https://github.com/gani0325/OpenCVCourse/assets/76983526/42834936-c04c-498d-a701-b8df8b53721e)
 #### 2) Basic Functions (cvtColor, GaussianBlur, Edge detection, dilate, erode)
@@ -17,5 +18,7 @@
 ![image](https://github.com/gani0325/OpenCVCourse/assets/76983526/9aa46483-c0f5-43e2-b8c3-ffe1ab5d5762)
 #### 9) Project1 - Virtual Painter
 ![image](https://github.com/gani0325/OpenCVCourse/assets/76983526/a579a720-a8c6-4004-ba76-3f668b71b8a7)
-#### 10) Document Scanner
+#### 10) Project2 - Document Scanner
 ![image](https://github.com/gani0325/OpenCVCourse/assets/76983526/f9bc26c6-01eb-4962-addb-507f07667171)
+#### 11) Project3 - License Plate Detector
+![image](https://github.com/gani0325/OpenCVCourse/assets/76983526/9d1005d5-542f-4e59-935f-f943f03a666b)
