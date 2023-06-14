@@ -31,6 +31,8 @@ void main() {
 		plateCascade.detectMultiScale(img, plates, 1.1, 10);
 
 		for (int i = 0; i < plates.size(); i++) {
+			Mat imgCrop = img(plates[i]);
+			imshow(to_string(i), imgCrop);
 			rectangle(img, plates[i].tl(), plates[i].br(), Scalar(255, 0, 44));
 		}
 
